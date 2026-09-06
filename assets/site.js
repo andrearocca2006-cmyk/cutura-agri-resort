@@ -1,4 +1,17 @@
 (() => {
+  const assetVersion = '20260906-3';
+  const versionedAsset = source => {
+    const url = new URL(source, document.baseURI);
+    url.searchParams.set('v', assetVersion);
+    return url.href;
+  };
+
+  document.querySelectorAll('img[src^="assets/"]').forEach(image => {
+    image.loading = 'eager';
+    image.decoding = image.classList.contains('hero-image') ? 'sync' : 'async';
+    image.src = versionedAsset(image.getAttribute('src'));
+  });
+
   const body = document.body;
   const header = document.querySelector('.site-header');
   const menuButton = document.querySelector('.menu-toggle');
@@ -66,7 +79,7 @@
     if (!items.length) return;
     currentIndex = (index + items.length) % items.length;
     const item = items[currentIndex];
-    lightboxImage.src = item.dataset.full;
+    lightboxImage.src = versionedAsset(item.dataset.full);
     lightboxImage.alt = item.dataset.alt;
     lightboxCaption.textContent = item.dataset.alt;
   };
